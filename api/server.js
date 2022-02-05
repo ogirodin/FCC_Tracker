@@ -18,6 +18,11 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/views/index.html')
 });
 
+app.use((req, res, next) => {
+  console.log(req.originalUrl);
+  next();
+}); 
+
 app.use(express.urlencoded({ extended: true }));
 app.post('/api/users', async (req, res) => {
   try {
@@ -64,7 +69,24 @@ app.get('/api/users/:id/logs', async (req, res) => {
     let oUser = user.toObject();
     oUser.log = oUser.exercises;
     delete oUser.exercises;
-    res.send({...oUser, count: user.exercises.length});
+
+    if (req.query.from) {
+      oUser.log = oUser.log.filter((v) => (
+        new Date(v.date)).getTime() >= (new Date(req.query.from)).getTime()
+      );
+    }
+
+    if (req.query.to) {
+      oUser.log = oUser.log.filter((v) => (
+        new Date(v.date)).getTime() <= (new Date(req.query.to)).getTime()
+      );
+    }
+
+    if (req.query.limit) {
+      oUser.log = oUser.log.splice(0, req.query.limit)
+    }
+
+    res.send({...oUser, count: oUser.log.length});
   } catch(e) {
     console.log(e);
     throw e;
