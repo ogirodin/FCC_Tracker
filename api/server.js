@@ -51,9 +51,17 @@ app.post('/api/users/:id/exercises', async (req, res) => {
 
 app.get('/api/users/:id/logs', async (req, res) => {
   try {
-    // {"_id":"61fd5b15cbe88c34a5c3b519","username":"test_user","date":"Fri Feb 04 2022","duration":30,"description":"hello"}
     const user = await sUser.User.findById(req.params.id);
     res.send(user);
+  } catch(e) {
+    console.log(e);
+    throw e;
+  }
+});
+
+app.get('/api/users', async (req, res) => {
+  try {
+    res.send(await sUser.User.find());
   } catch(e) {
     console.log(e);
     throw e;
