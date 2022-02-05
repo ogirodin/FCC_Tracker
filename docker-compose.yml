@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  api:
+    build: ./api
+    environment:
+      MESSAGE_STYLE: "uppercase"
+      MONGO_URI: "mongodb+srv://ogirodin:ogirodin-db@cluster0.rowfo.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+    volumes:
+      - './api/:/app'
+    ports:
+      - "3000:3000"
+      - "9229:9229"
