@@ -34,7 +34,6 @@ app.post('/api/users', async (req, res) => {
 
 app.post('/api/users/:id/exercises', async (req, res) => {
   try {
-    // {"_id":"61fd5b15cbe88c34a5c3b519","username":"test_user","date":"Fri Feb 04 2022","duration":30,"description":"hello"}
     const data = {
       user: req.params.id,
       date: new Date(),
@@ -42,7 +41,14 @@ app.post('/api/users/:id/exercises', async (req, res) => {
       description: req.body.description,
     };
     const exercise = await sUser.addExercise(sExercise, data);
-    res.send(exercise);
+    let user = await sUser.User.findById(req.params.id).select('_id username');
+    res.send({
+      _id: req.params.id,
+      username: user.username,
+      date: exercise.date,
+      description: exercise.description,
+      duration: exercise.duration,
+    });
   } catch(e) {
     console.log(e);
     throw e;
@@ -61,7 +67,9 @@ app.get('/api/users/:id/logs', async (req, res) => {
 
 app.get('/api/users', async (req, res) => {
   try {
-    res.send(await sUser.User.find());
+    res.send((await sUser.User.find()).map((v) => {
+      return {_id: v._id, username: v.username};
+    }));
   } catch(e) {
     console.log(e);
     throw e;
