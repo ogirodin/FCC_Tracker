@@ -10,7 +10,7 @@ class ExerciseService {
       const ExerciseSchema = new mongoose.Schema({
         user: { type: Schema.Types.ObjectId, ref: 'Person' },
         description: {type: String},
-        duration: {type: String},
+        duration: {type: Number},
         date: {type: String}
       }, {
         versionKey: false,

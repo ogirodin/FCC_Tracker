@@ -36,7 +36,10 @@ app.post('/api/users/:id/exercises', async (req, res) => {
   try {
     const data = {
       user: req.params.id,
-      date: new Date(),
+      date: req.body.date 
+        ? (new Date(req.body.date)).toDateString() 
+        : (new Date()).toDateString()
+      ,
       duration: req.body.duration,
       description: req.body.description,
     };
@@ -46,8 +49,8 @@ app.post('/api/users/:id/exercises', async (req, res) => {
       _id: req.params.id,
       username: user.username,
       date: exercise.date,
-      description: exercise.description,
       duration: exercise.duration,
+      description: exercise.description,
     });
   } catch(e) {
     console.log(e);
