@@ -36,8 +36,8 @@ app.post('/api/users/:id/exercises', async (req, res) => {
   try {
     const data = {
       user: req.params.id,
-      date: req.body.date 
-        ? (new Date(req.body.date)).toDateString() 
+      date: req.body.date
+        ? (new Date(req.body.date)).toDateString()
         : (new Date()).toDateString()
       ,
       duration: req.body.duration,
@@ -60,8 +60,11 @@ app.post('/api/users/:id/exercises', async (req, res) => {
 
 app.get('/api/users/:id/logs', async (req, res) => {
   try {
-    const user = await sUser.User.findById(req.params.id);
-    res.send(user);
+    const user = await sUser.User.findById(req.params.id).populate('exercises');
+    let oUser = user.toObject();
+    oUser.log = oUser.exercises;
+    delete oUser.exercises;
+    res.send({...oUser, count: user.exercises.length});
   } catch(e) {
     console.log(e);
     throw e;
